@@ -1,36 +1,47 @@
-
-
-
-
-
 var canv = document.getElementById("canvas0");
 var ctx = canv.getContext("2d");
 var array;
 var start = {x: null, y: null};
 var finish = {x: null, y: null};
+var stopp;
 
 
-const side = 840;
+const side = 756;
 
 canv.width = side;
 canv.height = side;
 
 var rect_count = document.getElementById("select");
+var wall_chanse = document.getElementById("wall_chanse");
+var rendering = document.getElementById("select1");
+var need_refill_input = document.getElementById("select2");
 var rect_size;
 
 var generate_rand_button = document.getElementById("gen_rand_but");
+var lab_gen_button = document.getElementById("lab_generate");
 var path_button = document.getElementById("path_finder");
+var its_time_to_stop_button = document.getElementById("find_stoper");
+
 
 function gen_rand_arr ()
 {
     array = [];
+    let number;
 
     for (let i = 0; i < rect_count.value; i++)
     {
         array.push([]);
         for (let j = 0; j < rect_count.value; j++)
         {
-            array[i].push(Math.round(Math.random()));
+            number = Math.random();
+            if (number < wall_chanse.value)
+            {
+                array[i].push(1);
+            }
+            else
+            {
+                array[i].push(0);
+            }
         }
     }
 
@@ -42,59 +53,100 @@ function gen_rand_arr ()
     finish.y = rect_count.value - 1;
 }
 
-async function refill_rect ()
+function refill_one_rect (x, y)
 {
-    let picture = new Promise(resolve => {
-        
-        ctx.fillStyle = "White";
-        ctx.fillRect(0, 0, side, side)
+    rect_size = side/rect_count.value;
+    
+    if (array[x][y] == 0)
+    {
+        ctx.fillStyle = "White"; //Пустое место
+        ctx.fillRect(rect_size*x, rect_size*y, rect_size, rect_size);
+    }
+    else if (array[x][y] == 1)
+    {
+        ctx.fillStyle = "Black"; //Стена
+        ctx.fillRect(rect_size*x, rect_size*y, rect_size, rect_size);
+    }
+    else if (array[x][y] == 2)
+    {
+        ctx.fillStyle = "Yellow"; //Начало
+        ctx.fillRect(rect_size*x, rect_size*y, rect_size, rect_size);
+    }
+    else if (array[x][y] == 3)
+    {
+        ctx.fillStyle = "Blue"; //Конец
+        ctx.fillRect(rect_size*x, rect_size*y, rect_size, rect_size);
+    }
+    else if (array[x][y] == 4)
+    {
+        ctx.fillStyle = "Red"; //Рассмотренно
+        ctx.fillRect(rect_size*x, rect_size*y, rect_size, rect_size);
+    }
+    else if (array[x][y] == 5)
+    {
+        ctx.fillStyle = "Green"; //В очереди
+        ctx.fillRect(rect_size*x, rect_size*y, rect_size, rect_size);
+    }
+    else if (array[x][y] == 6)
+    {
+        ctx.fillStyle = "Pink"; //Сейчас рассматривается
+        ctx.fillRect(rect_size*x, rect_size*y, rect_size, rect_size);
+    }
+    else if (array[x][y] == 7)
+    {
+        ctx.fillStyle = "Purple"; //Итоговый путь
+        ctx.fillRect(rect_size*x, rect_size*y, rect_size, rect_size);
+    }
+}
 
-        rect_size = side/rect_count.value;
+function refill_rect ()
+{
+    ctx.fillStyle = "White";
+    ctx.fillRect(0, 0, side, side);
 
-        for (let i = 0; i < rect_count.value; i++)
+    rect_size = side/rect_count.value;
+
+    for (let i = 0; i < rect_count.value; i++)
+    {
+        for (let j = 0; j < rect_count.value; j++)
         {
-            for (let j = 0; j < rect_count.value; j++)
+            if (array[i][j] == 1)
             {
-                if (array[i][j] == 1)
-                {
-                    ctx.fillStyle = "Black"; //Стена
-                    ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
-                }
-                else if (array[i][j] == 2)
-                {
-                    ctx.fillStyle = "Yellow"; //Начало
-                    ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
-                }
-                else if (array[i][j] == 3)
-                {
-                    ctx.fillStyle = "Blue"; //Конец
-                    ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
-                }
-                else if (array[i][j] == 4)
-                {
-                    ctx.fillStyle = "Red"; //Рассмотренно
-                    ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
-                }
-                else if (array[i][j] == 5)
-                {
-                    ctx.fillStyle = "Green"; //В очереди
-                    ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
-                }
-                else if (array[i][j] == 6)
-                {
-                    ctx.fillStyle = "Pink"; //Сейчас рассматривается
-                    ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
-                }
-                else if (array[i][j] == 7)
-                {
-                    ctx.fillStyle = "Purple"; //Итоговый путь
-                    ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
-                }
+                ctx.fillStyle = "Black"; //Стена
+                ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
+            }
+            else if (array[i][j] == 2)
+            {
+                ctx.fillStyle = "Yellow"; //Начало
+                ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
+            }
+            else if (array[i][j] == 3)
+            {
+                ctx.fillStyle = "Blue"; //Конец
+                ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
+            }
+            else if (array[i][j] == 4)
+            {
+                ctx.fillStyle = "Red"; //Рассмотренно
+                ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
+            }
+            else if (array[i][j] == 5)
+            {
+                ctx.fillStyle = "Green"; //В очереди
+                ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
+            }
+            else if (array[i][j] == 6)
+            {
+                ctx.fillStyle = "Pink"; //Сейчас рассматривается
+                ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
+            }
+            else if (array[i][j] == 7)
+            {
+                ctx.fillStyle = "Purple"; //Итоговый путь
+                ctx.fillRect(rect_size*i, rect_size*j, rect_size, rect_size);
             }
         }
-    });
-
-    let timer = await picture;
+    }
 }
 
 function elem_change(e)
@@ -108,6 +160,7 @@ function elem_change(e)
         {
             array[rect_i][rect_j] = 2;
             array[start.y][start.x] = 0;
+            refill_one_rect(start.y, start.x);
             start.x = rect_j;
             start.y = rect_i;
         }
@@ -118,6 +171,7 @@ function elem_change(e)
         {
             array[rect_i][rect_j] = 3;
             array[finish.y][finish.x] = 0;
+            refill_one_rect(finish.y, finish.x);
             finish.x = rect_j;
             finish.y = rect_i;
         }
@@ -137,19 +191,42 @@ function elem_change(e)
         }
     }
 
-    refill_rect();
-}
-
-function distance_finder (now, next)
-{
-    let len;
-    len = now.moved + Math.abs(finish.x - next.x) + Math.abs(finish.y - next.y)
-    return len;
+    refill_one_rect(rect_i, rect_j);
 }
 
 
-async function path_finder ()
+function all_disable ()
 {
+    path_button.setAttribute("disabled", "");
+    rect_count.setAttribute("disabled", "");
+    wall_chanse.setAttribute("disabled", "");
+    generate_rand_button.setAttribute("disabled", "");
+    rendering.setAttribute("disabled", "");
+    lab_gen_button.setAttribute("disabled", "");
+    canv.removeEventListener("click", elem_change);
+    its_time_to_stop_button.removeAttribute("disabled");
+}
+
+function all_enabled ()
+{
+    path_button.removeAttribute("disabled");
+    rect_count.removeAttribute("disabled");
+    wall_chanse.removeAttribute("disabled");
+    generate_rand_button.removeAttribute("disabled");
+    rendering.removeAttribute("disabled");
+    lab_gen_button.removeAttribute("disabled");
+    canv.addEventListener("click", elem_change);
+    its_time_to_stop_button.setAttribute("disabled", "");
+}
+
+function path_finder ()
+{
+    all_disable();
+    stopp = false;
+
+    let now1 = new Date().getTime();
+
+
     for (let i = 0; i < rect_count.value; i++)
     {
         for (let j = 0; j < rect_count.value; j++)
@@ -161,12 +238,12 @@ async function path_finder ()
         }
     }
 
-    array[start.x][start.y] = 2;
-    array[finish.x][finish.y] = 3;
+    array[start.y][start.x] = 2;
+    array[finish.y][finish.x] = 3;
 
-    let current_item = {x: start.x, y: start.y, pr_index: -1, moved: 0};
-    array[current_item.x][current_item.y] = 6;
-    await refill_rect();
+    let current_item = {x: start.x, y: start.y, pr_index: -1, moved: 0, move: null};
+    array[current_item.y][current_item.x] = 6;
+    refill_rect();
 
 
     let can = [];
@@ -176,104 +253,298 @@ async function path_finder ()
     let minimal;
     let minimal_ind;
 
-    while (cont)
+    let cycle = setInterval(function () 
     {
-        for (let i = -1; i < 2; i++)
-        {
-            for (let j = -1; j < 2; j++)
-            {
-                if (!(i == 0 && j == 0)&&(current_item.x + i >= 0)&&(current_item.x + i < rect_count.value)&&(current_item.y + j >= 0)&&(current_item.y + j < rect_count.value)&&(array[current_item.x + i][current_item.y + j]!=1))
-                {
-                    if (array[current_item.x + i][current_item.y + j] == 3)
-                    {
-                        array[current_item.x + i][current_item.y + j] = 7;
-                        while (current_item.pr_index != -1)
-                        {
-                            array[current_item.x][current_item.y] = 7;
-                            current_item = cant[current_item.pr_index];
-                        }
-                        array[current_item.x][current_item.y] = 7;
-                        await refill_rect();
-                        cont = false;
-                        break;
-                    }
-                    else
-                    {
-                        next_item = {x: current_item.x + i, y: current_item.y + j, pr_index: cant.length, moved: null};
-                        next_item.moved = distance_finder(current_item, next_item);
 
-                        if (array[next_item.x][next_item.y] == 0)
+        if (stopp)
+        {
+            for (let i = 0; i < rect_count.value; i++)
+            {
+                for (let j = 0; j < rect_count.value; j++)
+                {
+                    if ((array[i][j] != 0) && (array[i][j] != 1) && (array[i][j] != 2) && (array[i][j] != 3))
+                    {
+                        array[i][j] = 0;
+                    };
+                }
+            }
+
+            array[start.y][start.x] = 2;
+            array[finish.y][finish.x] = 3;
+
+            let now2 = new Date().getTime();
+            console.log(now2 - now1);
+            refill_rect();
+            all_enabled();
+
+            clearInterval(cycle);
+        }
+        else
+        {
+            for (let i = -1; i < 2; i++)
+            {
+                for (let j = -1; j < 2; j++)
+                {
+                    if (!(i == 0 && j == 0)&&(current_item.x + i >= 0)&&(current_item.x + i < rect_count.value)&&(current_item.y + j >= 0)&&(current_item.y + j < rect_count.value)&&(array[current_item.y + j][current_item.x + i]!=1))
+                    {
+                        if (array[current_item.y + j][current_item.x + i] == 3)
                         {
-                            can.push(next_item);
-                            array[next_item.x][next_item.y] = 5;
-                            await refill_rect();
-                        }
-                        else if (array[next_item.x][next_item.y] == 5)
-                        {
-                            for (let k = 0; k < can.length; k++)
+                            array[current_item.y + j][current_item.x + i] = 7;
+                            while (current_item.pr_index != -1)
                             {
-                                if (can[k].x == next_item.x && can[k].y == next_item.y)
+                                array[current_item.y][current_item.x] = 7;
+                                current_item = cant[current_item.pr_index];
+                            }
+                            array[current_item.y][current_item.x] = 7;
+                            refill_rect();
+                            cont = false;
+                            all_enabled();
+                            let now2 = new Date().getTime();
+                            console.log(now2 - now1);
+                            clearInterval(cycle);
+                            break;
+                        }
+                        else
+                        {
+                            next_item = {x: current_item.x + i, y: current_item.y + j, pr_index: cant.length, moved: null, move: null};
+                            if ((Math.abs(next_item.x - current_item.x) == 0)||(Math.abs(next_item.y - current_item.y) == 0))
+                            {
+                                next_item.moved = current_item.moved + 1;
+                            }
+                            else
+                            {
+                                next_item.moved = current_item.moved + 1.4;
+                            }
+                            next_item.move = next_item.moved + Math.max(Math.abs(finish.x - next_item.x) , Math.abs(finish.y - next_item.y));
+
+                            if (array[next_item.y][next_item.x] == 0)
+                            {
+                                can.push(next_item);
+                                array[next_item.y][next_item.x] = 5;
+                                if (need_refill_input.value == 1)
                                 {
-                                    if (can[k].moved > next_item.moved)
+                                    refill_one_rect(next_item.y, next_item.x);
+                                }   
+                            }
+                            else if (array[next_item.y][next_item.x] == 5)
+                            {
+                                for (let k = 0; k < can.length; k++)
+                                {
+                                    if (can[k].x == next_item.x && can[k].y == next_item.y)
                                     {
-                                        break;
+                                        if (can[k].moved <= next_item.moved)
+                                        {
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            can[k] = next_item;
+                                        }
                                     }
-                                    else
-                                    {
-                                        can[k].moved = next_item.moved;
-                                    }
+                                    
                                 }
                             }
                         }
                     }
                 }
             }
-        }
-        if (cont)
-        {
-            if (can.length == 0)
+            if (cont)
             {
-                cont = false;
-                alert("Невозможно построить путь!");
-            }
-            else
-            {
-                array[current_item.x][current_item.y] = 4;
-                cant.push(current_item);
-                await refill_rect();
-
-                minimal = can[0].moved;
-                minimal_ind = 0;
-
-                for (let i = 0; i < can.length; i++)
+                if (can.length == 0)
                 {
-                    if (can[i].moved <= minimal)
-                    {
-                        minimal = can[i].moved;
-                        minimal_ind = i;
-                    }
+                    cont = false;
+                    alert("Невозможно построить путь!");
+                    all_enabled();
+                    let now2 = new Date().getTime();
+                    console.log(now2 - now1);
+                    refill_rect();
+                    clearInterval(cycle);
                 }
+                else
+                {
+                    array[current_item.y][current_item.x] = 4;
+                    if (need_refill_input.value == 1)
+                    {
+                        refill_one_rect(current_item.y, current_item.x);
+                    }
+                    cant.push(current_item);
 
-                current_item = can[minimal_ind];
-                array[current_item.x][current_item.y] = 6;
-                await refill_rect();
-                can.splice(minimal_ind,1);
+                    minimal = can[0].move;
+                    minimal_ind = 0;
 
+                    for (let i = 0; i < can.length; i++)
+                    {
+                        if (can[i].move <= minimal)
+                        {
+                            minimal = can[i].move;
+                            minimal_ind = i;
+                        }
+                    }
+
+                    current_item = can[minimal_ind];
+                    array[current_item.y][current_item.x] = 6;
+                    if (need_refill_input.value == 1)
+                    {
+                        refill_one_rect(current_item.y, current_item.x);
+                    }
+                    can.splice(minimal_ind,1);
+
+                }
             }
-
-
         }
-
-
-
-
-
-    }
+    }, rendering.value);
 }
 
+function lab_generation ()
+{
+    let counter = 1;
+    let tractors = [];
+
+    for (let i = 0; i < 100; i++)
+    {
+        tractors.push({x:0, y:0});
+    }
+
+    array = [];
+
+    rect_side = parseInt(rect_count.value) + (1 - rect_count.value % 2);
+
+    for (let i = 0; i < rect_side; i++)
+    {
+        array.push([]);
+        for (let j = 0; j < rect_side; j++)
+        {
+            if ((array[i][j] != 0) && (array[i][j] != 1) && (array[i][j] != 2) && (array[i][j] != 3))
+            {
+                array[i][j] = 1;
+            };
+        }
+    }
+
+    array[0][0] = 0;
+    let path;
+
+    while (counter < Math.round(rect_side / 2)**2)
+    {
+        for (let i = 0; i < tractors.length; i++)
+        {
+            path = Math.floor(Math.random()*4);
+            if (path == 0)
+            {
+                if (tractors[i].y - 2 < 0)
+                {
+                    tractors[i].y += 2;
+                    if (array[tractors[i].y][tractors[i].x] == 1)
+                    {
+                        counter += 1;
+                        array[tractors[i].y - 1][tractors[i].x] = 0;
+                        array[tractors[i].y][tractors[i].x] = 0;
+                    }
+                }
+                else
+                {
+                    tractors[i].y -= 2;
+                    if (array[tractors[i].y][tractors[i].x] == 1)
+                    {
+                        counter += 1;
+                        array[tractors[i].y + 1][tractors[i].x] = 0;
+                        array[tractors[i].y][tractors[i].x] = 0;
+                    }
+                }
+            }
+            else if (path == 1)
+            {
+                if (tractors[i].x + 2 >= (rect_side))
+                {
+                    tractors[i].x -= 2;
+                    if (array[tractors[i].y][tractors[i].x] == 1)
+                    {
+                        counter += 1;
+                        array[tractors[i].y][tractors[i].x + 1] = 0;
+                        array[tractors[i].y][tractors[i].x] = 0;
+                    }
+                }
+                else
+                {
+                    tractors[i].x += 2;
+                    if (array[tractors[i].y][tractors[i].x] == 1)
+                    {
+                        counter += 1;
+                        array[tractors[i].y][tractors[i].x - 1] = 0;
+                        array[tractors[i].y][tractors[i].x] = 0;
+                    }
+                }
+            }
+            else if (path == 2)
+            {
+                if (tractors[i].y + 2 >= (rect_side))
+                {
+                    tractors[i].y -= 2;
+                    if (array[tractors[i].y][tractors[i].x] == 1)
+                    {
+                        counter += 1;
+                        array[tractors[i].y + 1][tractors[i].x] = 0;
+                        array[tractors[i].y][tractors[i].x] = 0;
+                    }
+                }
+                else
+                {
+                    tractors[i].y += 2;
+                    if (array[tractors[i].y][tractors[i].x] == 1)
+                    {
+                        counter += 1;
+                        array[tractors[i].y - 1][tractors[i].x] = 0;
+                        array[tractors[i].y][tractors[i].x] = 0;
+                    }
+                }
+            }
+            else if (path == 3)
+            {
+                if (tractors[i].x - 2 < 0)
+                {
+                    tractors[i].x += 2;
+                    if (array[tractors[i].y][tractors[i].x] == 1)
+                    {
+                        counter += 1;
+                        array[tractors[i].y][tractors[i].x - 1] = 0;
+                        array[tractors[i].y][tractors[i].x] = 0;
+                    }
+                }
+                else
+                {
+                    tractors[i].x -= 2;
+                    if (array[tractors[i].y][tractors[i].x] == 1)
+                    {
+                        counter += 1;
+                        array[tractors[i].y][tractors[i].x + 1] = 0;
+                        array[tractors[i].y][tractors[i].x] = 0;
+                    }
+                }
+            }
+
+
+        }
+    }
+
+    array[start.y][start.x] = 2;
+    array[finish.y][finish.x] = 3;
+
+    if (array[finish.y - 1][finish.x] == 1 && array[finish.y][finish.x - 1] == 1)
+    {
+        let rand = Math.round(Math.random());
+
+        array[finish.y - (1 - rand)][finish.x - rand] == 0;
+    }
+
+
+
+
+    refill_rect();
+}
+
+its_time_to_stop_button.setAttribute("disabled", "");
 gen_rand_arr();
 refill_rect();
-
 
 generate_rand_button.addEventListener("click", function()
 {
@@ -281,7 +552,9 @@ generate_rand_button.addEventListener("click", function()
     refill_rect();
 });
 
-canv.addEventListener("click", function(e){elem_change(e)});
+canv.addEventListener("click", elem_change);
+
+need_refill_input.addEventListener("change", refill_rect);
 
 rect_count.addEventListener("change", function() 
 {
@@ -289,4 +562,12 @@ rect_count.addEventListener("change", function()
     refill_rect();
 });
 
+its_time_to_stop_button.addEventListener("click", function() 
+{
+    stopp = true;
+});
+
 path_button.addEventListener("click", path_finder);
+
+lab_gen_button.addEventListener("click", lab_generation);
+

@@ -17,20 +17,35 @@
             <label for="radio3">Стена</label><input name="radio-in" type="radio" id="radio3" checked>
             <label for="radio0">Старт</label><input name="radio-in" type="radio" id="radio0" checked>
             <label for="radio1">Финиш</label><input name="radio-in" type="radio" id="radio1" checked>
+            <label for="select1">Частота отрисовки</label>
+            <select name="rect_count1" id="select1">
+                <option value="0">Быстро</option>
+                <option value="50">Нормально</option>
+                <option value="100">Медленно</option>
+                <option value="200">Очень медленно</option>
+            </select>
+            <label for="select2">Отрисовывать поиск пути:</label>
+            <select name="rect_count1" id="select2">
+                <option value="1">Да</option>
+                <option value="0">Нет</option>
+            </select>
         </div>
         <div>
+            <label for="select">Ширина/высота в ячейках</label>
             <select name="rect_count" id="select">
-                <option value="10">10</option>
-                <option value="14">14</option>
-                <option value="28">28</option>
-                <option value="70">70</option>
-                <option value="210">210</option>
+                <option value="9">9</option>
+                <option value="21">21</option>
+                <option value="63">63</option>
+                <option value="189">189</option>
             </select>
+            <label for="wall_chanse">Шанс генерации стены</label><input type="range" id="wall_chanse" min = "0" max = "1" step = "0.01">
         </div>
 
         <div>
-            <button id="gen_rand_but">Сгенерировать заново</button>
+            <button id="gen_rand_but">Сгенерировать случайно</button>
+            <button id="lab_generate">Сгенерировать лабиринт</button>
             <button id="path_finder">Поиск пути</button>
+            <button id="find_stoper">Прекратить поиск</button>
         </div>
     </div>
 
