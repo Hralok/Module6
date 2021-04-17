@@ -1,0 +1,87 @@
+body {
+    background: rgb(255, 255, 255);
+}
+
+canvas {
+    border-style:dashed;
+    border-color:rgb(0, 0, 0);
+    border-width: 10px;
+}
+
+#path_buttons {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.font {
+    background: rgb(206, 206, 206);
+    margin: 5px;
+    padding-left: 2px;
+}
+
+#head {
+    display: flex;
+    align-items:center;
+    padding-left: 10px;
+    background: rgb(206, 206, 206);
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+#type {
+    display: flex;
+    flex-direction:column;
+}
+
+#main_body {
+    width: min-content;
+    margin: 0px;
+    display: flex;
+    flex-direction:row-reverse;
+    justify-content:center;
+    align-items:center;
+    align-content:center;
+}
+
+#switches {
+    width: 230px;
+    border-style:ridge;
+    border-color:rgb(0, 0, 0);
+    border-width: 10px;
+    display: flex;
+    flex-direction:column;
+    align-items:flex-start;
+    height: 760px;
+    background: rgb(94, 94, 94)
+}
+#switches {
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+
+button {
+    margin-left: 5px;
+    margin-right: 5px;
+    height: 50px;
+    font-weight: 700px;
+    color: white;
+    text-decoration: none;
+    padding: .8em 1em calc(.8em + 3px);
+    border-radius: 3px;
+    background: rgb(66, 64, 199);
+    box-shadow: 0 -3px rgb(53, 74, 167) inset;
+    transition: 0.2s;
+ } 
+button:hover { background: rgb(53, 74, 167); }
+button:active {
+    background: rgb(35, 33, 147);
+    box-shadow: 0 3px rgb(35, 33, 147) inset;
+}
+button:disabled {
+    background: rgb(54, 61, 160);
+}
+
+.gen_butt {
+    width: 220px;
+}

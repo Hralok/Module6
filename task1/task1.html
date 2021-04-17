@@ -5,50 +5,64 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="task1.css">
 </head>
 <body>
-    <div><a href="../main/main.html">Назад</a></div>
-    <div>
-        <canvas  id="canvas0">Canvas wasn't created</canvas>
-    </div>
-    <div>
-        <div>
-            <label for="radio2">Пустое поле</label><input name="radio-in" type="radio" id="radio2" checked>
-            <label for="radio3">Стена</label><input name="radio-in" type="radio" id="radio3" checked>
-            <label for="radio0">Старт</label><input name="radio-in" type="radio" id="radio0" checked>
-            <label for="radio1">Финиш</label><input name="radio-in" type="radio" id="radio1" checked>
-            <label for="select1">Частота отрисовки</label>
-            <select name="rect_count1" id="select1">
-                <option value="0">Быстро</option>
-                <option value="50">Нормально</option>
-                <option value="100">Медленно</option>
-                <option value="200">Очень медленно</option>
-            </select>
-            <label for="select2">Отрисовывать поиск пути:</label>
-            <select name="rect_count1" id="select2">
-                <option value="1">Да</option>
-                <option value="0">Нет</option>
-            </select>
+    <div id="head"><a href="../main/main.html">Назад</a></div>
+    <div id="main_body">
+        <div class="main_div">
+            <canvas  id="canvas0">Canvas wasn't created</canvas>
         </div>
-        <div>
-            <label for="select">Ширина/высота в ячейках</label>
-            <select name="rect_count" id="select">
-                <option value="9">9</option>
-                <option value="21">21</option>
-                <option value="63">63</option>
-                <option value="189">189</option>
-            </select>
-            <label for="wall_chanse">Шанс генерации стены</label><input type="range" id="wall_chanse" min = "0" max = "1" step = "0.01">
-        </div>
+        <div id="switches" class="main_div">
+            <div id="switches1">
+                <div class="font" id="type">
+                    <div><label for="radio2">Пустое поле</label><input name="radio-in" type="radio" id="radio2" checked></div>
+                    <div><label for="radio3">Стена</label><input name="radio-in" type="radio" id="radio3" checked></div>
+                    <div><label for="radio0">Старт</label><input name="radio-in" type="radio" id="radio0" checked></div>
+                    <div><label for="radio1">Финиш</label><input name="radio-in" type="radio" id="radio1" checked></div>
+                </div>
+                <div class="font">
+                    <label for="select1">Частота отрисовки -</label>
+                    <select name="rect_count1" id="select1">
+                        <option value="0">Быстро</option>
+                        <option value="50">Нормально</option>
+                        <option value="100">Медленно</option>
+                        <option value="200">Очень медленно</option>
+                    </select>
+                </div>
+                <div class="font">
+                    <label for="select2">Отрисовывать поиск пути:</label>
+                    <select name="rect_count1" id="select2">
+                        <option value="1">Да</option>
+                        <option value="0">Нет</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="font">
+                    <label for="select">Ширина/высота в ячейках:</label>
+                    <select name="rect_count" id="select">
+                        <option value="9">9</option>
+                        <option value="21">21</option>
+                        <option value="63">63</option>
+                        <option value="189">189</option>
+                    </select>
+                </div>
+                <div class="font">
+                    <label for="wall_chanse">Шанс генерации стены</label><input type="range" id="wall_chanse" min = "0" max = "1" step = "0.01">
+                </div>
+            </div>
 
-        <div>
-            <button id="gen_rand_but">Сгенерировать случайно</button>
-            <button id="lab_generate">Сгенерировать лабиринт</button>
-            <button id="path_finder">Поиск пути</button>
-            <button id="find_stoper">Прекратить поиск</button>
+            <div>
+                <button class="gen_butt" id="gen_rand_but">Сгенерировать случайно</button>
+                <button class="gen_butt" id="lab_generate">Сгенерировать лабиринт</button>
+                <div id="path_buttons">
+                <button id="path_finder">Поиск пути</button>
+                <button id="find_stoper">Остановить поиск</button>
+                </div>
+            </div>
         </div>
     </div>
-
 </body>
 <script src="task1.js"></script>
 

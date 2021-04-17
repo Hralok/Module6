@@ -154,6 +154,22 @@ function elem_change(e)
     rect_j = Math.floor(e.offsetY/rect_size);
     rect_i = Math.floor(e.offsetX/rect_size);
 
+    if ((array[rect_i][rect_j] != 0) && (array[rect_i][rect_j] != 1) && (array[rect_i][rect_j] != 2) && (array[rect_i][rect_j] != 3))
+    {
+        for (let i = 0; i < rect_count.value; i++)
+        {
+            for (let j = 0; j < rect_count.value; j++)
+            {
+                if ((array[i][j] != 0) && (array[i][j] != 1) && (array[i][j] != 2) && (array[i][j] != 3))
+                {
+                    array[i][j] = 0;
+                };
+            }
+        }
+        array[start.y][start.x] = 2;
+        array[finish.y][finish.x] = 3;
+        refill_rect();
+    }
     if (document.getElementById("radio0").checked == true)
     {
         if (array[rect_i][rect_j] != 2 && array[rect_i][rect_j] != 3)
@@ -192,6 +208,7 @@ function elem_change(e)
     }
 
     refill_one_rect(rect_i, rect_j);
+
 }
 
 
@@ -279,7 +296,7 @@ function path_finder ()
 
             clearInterval(cycle);
         }
-        else
+        else if (its_time_to_stop_button.textContent == "Остановить поиск")
         {
             for (let i = -1; i < 2; i++)
             {
@@ -315,7 +332,7 @@ function path_finder ()
                             {
                                 next_item.moved = current_item.moved + 1.4;
                             }
-                            next_item.move = next_item.moved + Math.max(Math.abs(finish.x - next_item.x) , Math.abs(finish.y - next_item.y));
+                            next_item.move = next_item.moved + (Math.abs(finish.x - next_item.x) + Math.abs(finish.y - next_item.y)); //Math.max(Math.abs(finish.x - next_item.x) , Math.abs(finish.y - next_item.y))
 
                             if (array[next_item.y][next_item.x] == 0)
                             {
@@ -353,6 +370,7 @@ function path_finder ()
                 if (can.length == 0)
                 {
                     cont = false;
+                    array[current_item.y][current_item.x] = 4;
                     alert("Невозможно построить путь!");
                     all_enabled();
                     let now2 = new Date().getTime();
@@ -369,8 +387,8 @@ function path_finder ()
                     }
                     cant.push(current_item);
 
-                    minimal = can[0].move;
-                    minimal_ind = 0;
+                    minimal = can[can.length - 1].move;
+                    minimal_ind = can.length - 1;
 
                     for (let i = 0; i < can.length; i++)
                     {
@@ -542,6 +560,15 @@ function lab_generation ()
     refill_rect();
 }
 
+function continue_finding()
+{
+    its_time_to_stop_button.textContent = "Остановить поиск";
+    path_button.textContent = "Поиск пути";
+    path_button.removeEventListener("click", continue_finding);
+    path_button.addEventListener("click", path_finder);
+    path_button.setAttribute("disabled", "");
+}
+
 its_time_to_stop_button.setAttribute("disabled", "");
 gen_rand_arr();
 refill_rect();
@@ -564,10 +591,27 @@ rect_count.addEventListener("change", function()
 
 its_time_to_stop_button.addEventListener("click", function() 
 {
-    stopp = true;
+    if (its_time_to_stop_button.textContent == "Остановить поиск")
+    {
+        path_button.removeAttribute("disabled", "");
+        path_button.textContent = "Продолжить поиск"
+        path_button.removeEventListener("click", path_finder);
+        path_button.addEventListener("click", continue_finding);
+        its_time_to_stop_button.textContent = "Прервать поиск";
+    }
+    else
+    {
+        stopp = true;
+        its_time_to_stop_button.textContent = "Остановить поиск";
+        path_button.textContent = "Поиск пути";
+        path_button.removeEventListener("click", continue_finding);
+        path_button.addEventListener("click", path_finder);
+    }
 });
 
 path_button.addEventListener("click", path_finder);
 
 lab_gen_button.addEventListener("click", lab_generation);
 
+
+console.log(its_time_to_stop_button.textContent);
